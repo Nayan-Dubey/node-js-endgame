@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    /* css by luispato - https://www.instagram.com/luispaaaaato */
+:root {
+  --grid-icon-link: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCI+PHBhdGggZD0iTTE5LDNINUEyLDIgMCAwLDAgMyw1VjE5QTIsMiAwIDAsMCA1LDIxSDE5QTIsMiAwIDAsMCAyMSwxOVY1QTIsMiAwIDAsMCAxOSwzTTE5LDE5SDVWNUgxOVYxOU0xMSwxNkgxMEM4LjM5LDE2IDYsMTQuOTQgNiwxMkM2LDkuMDcgOC4zOSw4IDEwLDhIMTFWMTBIMTBDOS41NCwxMCA4LDEwLjE3IDgsMTJDOCwxMy45IDkuNjcsMTQgMTAsMTRIMTFWMTZNMTQsMTZIMTNWMTRIMTRDMTQuNDYsMTQgMTYsMTMuODMgMTYsMTJDMTYsMTAuMSAxNC4zMywxMCAxNCwxMEgxM1Y4SDE0QzE1LjYxLDggMTgsOS4wNyAxOCwxMkMxOCwxNC45NCAxNS42MSwxNiAxNCwxNk0xNSwxM0g5VjExSDE1VjEzWiIgLz48L3N2Zz4=");
+  --grid-number-of-columns: 3;
+  --ui-color: rgb(255 255 255 / 100%);
+  --button-size: 2rem;
+  --image-aspect-ratio: 1;
+  --hoverable-element-opacity: 1;
+  --hovered-element-opacity: 0.75;
+  --figcaption-gradient-start-color: rgb(0 0 0 / 75%);
+  --figcaption-gradient-end-color: rgb(0 0 0 / 0%);
+  --figcaption-gradient: linear-gradient(
+    0deg,
+    var(--figcaption-gradient-start-color) 0%,
+    var(--figcaption-gradient-end-color) 100%
+  );
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-family: Roboto, sans-serif;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100%;
+  padding: 2rem;
+}
+
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(var(--grid-number-of-columns), 1fr);
+  grid-gap: 0.5rem;
+  width: calc(100% - 4rem);
+  max-width: 480px;
+  z-index: 1;
+}
+
+.grid[open] {
+  --grid-number-of-columns: 4;
+}
+
+.grid__figure {
+  position: relative;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  aspect-ratio: var(--image-aspect-ratio);
+  border-radius: 0.25rem;
+  filter: brightness(0.75) grayscale(0.25);
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.grid__figure[active] {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  filter: none;
+  pointer-events: none;
+}
+
+.grid__figure:is(:hover, :focus-visible) {
+  filter: none;
+}
+
+.grid__image {
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--image-aspect-ratio);
+  vertical-align: middle;
+  object-fit: cover;
+}
+
+.grid__figcaption {
+  transition: transform 0.25s ease-in-out 0.125s,
+    opacity 0.25s ease-in-out 0.125s;
+  transform: translateY(100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.grid__figure[active] .grid__figcaption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 0.5rem 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "title link"
+    "author link";
+  opacity: 1;
+  background: var(--figcaption-gradient);
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+.grid__title {
+  grid-area: title;
+  color: var(--ui-color);
+}
+
+.grid__author {
+  grid-area: author;
+  color: var(--ui-color);
+}
+
+.grid__link {
+  grid-area: link;
+  display: block;
+  height: var(--button-size);
+  width: var(--button-size);
+  background-color: var(--ui-color);
+  mask-position: center;
+  -webkit-mask-position: center;
+  mask-size: contain;
+  -webkit-mask-size: contain;
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+  mask-image: var(--grid-icon-link);
+  -webkit-mask-image: var(--grid-icon-link);
+  align-self: flex-end;
+  opacity: var(--hoverable-element-opacity);
+  pointer-events: all;
+}
+
+.grid__link:is(:hover, :focus-visible) {
+  opacity: var(--hovered-element-opacity);
+}
+
+.grid__close {
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  height: var(--button-size);
+  width: var(--button-size);
+  padding: 0;
+  border: none;
+  background-color: transparent;
+  opacity: var(--hoverable-element-opacity);
+  cursor: pointer;
+  z-index: 1;
+}
+
+.grid[open] .grid__close {
+  display: block;
+}
+
+.grid__close:is(:hover, :focus-visible) {
+  opacity: var(--hovered-element-opacity);
+}
+
+.grid__close-icon {
+  height: var(--button-size);
+  width: var(--button-size);
+  fill: var(--ui-color);
+}
+
+</style>
+<body>
+    <!-- this is just a little experiment playing around with css grid.
+ I had fund doing it and i think with a little bit more work this could become something really nice
+
+markup by luispato - https://www.instagram.com/luispaaaaato/
+
+All images are linked to pexels, where i got them. If you like them, go there and give them artist a shout out!
+-->
+<div class="container">
+    <div class="grid">
+      <button class="grid__close" aria-label="Close the grid">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="grid__close-icon">
+          <title>close</title>
+          <path d="M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z"/></svg>
+      </button>
+      
+      <figure class="grid__figure" id="figure-one">
+        <img src="https://images.pexels.com/photos/807598/pexels-photo-807598.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" class="grid__image">
+        <figcaption class="grid__figcaption">
+          <h3 class="grid__title">Leaves</h3>
+          <p class="grid__author">Sohail Nachiti</p>
+          <a href="https://www.pexels.com/photo/close-up-photography-of-leaves-with-droplets-807598/" class="grid__link" target="_blank"></a>
+        </figcaption>
+      </figure>
+      
+      <figure class="grid__figure" id="figure-two">
+        <img src="https://images.pexels.com/photos/305827/pexels-photo-305827.jpeg" alt="" class="grid__image">
+        <figcaption class="grid__figcaption">
+          <h3 class="grid__title">Green succulents</h3>
+          <p class="grid__author">Scott Webb</p>
+          <a href="https://www.pexels.com/photo/selective-focus-photography-of-green-succulents-305827/" class="grid__link" target="_blank"></a>
+        </figcaption>
+      </figure>
+      
+      <figure class="grid__figure" id="figure-three">
+        <img src="https://images.pexels.com/photos/1549194/pexels-photo-1549194.jpeg" class="grid__image">
+        <figcaption class="grid__figcaption">
+          <h3 class="grid__title">Aloe Vera</h3>
+          <p class="grid__author">Elle Hughes</p>
+          <a href="https://www.pexels.com/photo/photo-of-green-aloe-vera-plants-1549194/" class="grid__link" target="_blank"></a>
+        </figcaption>
+      </figure>
+      
+      <figure class="grid__figure" id="figure-four">
+        <img src="https://images.pexels.com/photos/1055379/pexels-photo-1055379.jpeg" alt="" class="grid__image">
+        <figcaption class="grid__figcaption">
+          <h3 class="grid__title">Plants</h3>
+          <p class="grid__author">Daniel Frese</p>
+          <a href="https://www.pexels.com/photo/photography-of-plants-1055379/" class="grid__link" target="_blank"></a>
+        </figcaption>
+      </figure>
+      
+      <figure class="grid__figure" id="figure-five">
+        <img src="https://images.pexels.com/photos/1494067/pexels-photo-1494067.jpeg" alt="" class="grid__image">
+        <figcaption class="grid__figcaption">
+          <h3 class="grid__title">Pink petaled flowers</h3>
+          <p class="grid__author">Chris G.</p>
+          <a href="https://www.pexels.com/photo/pink-petaled-flowers-with-leaves-1494067/" class="grid__link" target="_blank"></a>
+        </figcaption>
+      </figure>
+      
+      <figure class="grid__figure" id="figure-six">
+        <img src="https://images.pexels.com/photos/1090977/pexels-photo-1090977.jpeg" alt="" class="grid__image">
+        <figcaption class="grid__figcaption">
+          <h3 class="grid__title">Macro</h3>
+          <p class="grid__author">Irina Iriser</p>
+          <a href="https://www.pexels.com/photo/macro-photograph-of-grass-1090977/" class="grid__link" target="_blank"></a>
+        </figcaption>
+      </figure>
+      
+      <figure class="grid__figure" id="figure-seven">
+        <img src="https://images.pexels.com/photos/1813513/pexels-photo-1813513.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="" class="grid__image">
+        <figcaption class="grid__figcaption">
+          <h3 class="grid__title">Close-up leaves</h3>
+          <p class="grid__author">Lina Kivaka</p>
+          <a href="https://www.pexels.com/photo/close-up-photo-of-leaves-1813513/" class="grid__link" target="_blank"></a>
+        </figcaption>
+      </figure>
+      
+      <figure class="grid__figure" id="figure-eight">
+        <img src="https://images.pexels.com/photos/2090641/pexels-photo-2090641.jpeg" alt="" class="grid__image">
+        <figcaption class="grid__figcaption">
+          <h3 class="grid__title">Monstera</h3>
+          <p class="grid__author">Leah Kelley</p>
+          <a href="https://www.pexels.com/photo/close-up-photo-of-swiss-cheese-plant-2090641/" class="grid__link" target="_blank"></a>
+        </figcaption>
+      </figure>
+      
+      <figure class="grid__figure" id="figure-nine">
+        <img src="https://images.pexels.com/photos/1073069/pexels-photo-1073069.jpeg" alt="" class="grid__image">
+        <figcaption class="grid__figcaption">
+          <h3 class="grid__title">Variegated leaves</h3>
+          <p class="grid__author">Brett Sayles</p>
+          <a href="https://www.pexels.com/photo/closeup-photo-of-green-variegated-leaf-plants-1073069/" class="grid__link" target="_blank"></a>
+        </figcaption>
+      </figure>
+    </div>
+  </div>
+</body>
+<script>
+    console.clear();
+
+// Just having fun experimenting with CSS grid
+// This is a simple grid which could be improved upon, but already looks kind of nice!
+// JS by luispato - https://www.instagram.com/luispaaaaato
+class Grid {
+  constructor(gridEl) {
+    this.gridEl = gridEl;
+    this._images = this.gridEl.querySelectorAll('.grid__figure');
+    this._closeButton = this.gridEl.querySelector('.grid__close');
+    this._activeImage = null;
+
+    if (!this._images || !this._closeButton) {
+      console.log('Error initialising the Grid! Could not get all elements');
+      return;
+    }
+
+    this._init();
+  }
+
+  // Add click listeners to the images and close button
+  _init = () => {
+    this._images.forEach((image) => {
+      image.addEventListener('click', this._onImageClick);
+    });
+
+    this._closeButton.addEventListener('click', this._onCloseClick);
+  }
+
+  // Set clicked image as active image and trigger ui update
+  _onImageClick = (event) => {
+    this._activeImage = event.currentTarget;
+    this._updateUI();
+  }
+
+  // reset active image and trigger ui update
+  _onCloseClick = () => {
+    this._activeImage = null;
+    this._updateUI();
+  }
+
+  // update ui by adding / removing the 'open' attribute from the grid and 'active' attribut from the active image
+  _updateUI = () => {
+    this._activeImage
+      ? this.gridEl.setAttribute('open', '')
+      : this.gridEl.removeAttribute('open');
+    
+    this._images.forEach((image) => {
+      image === this._activeImage
+        ? image.setAttribute('active', '')
+        : image.removeAttribute('active');
+    })
+  }
+}
+
+// Get grid element
+const gridEl = document.querySelector('.grid');
+
+// Initialize
+const grid = new Grid(gridEl);
+
+</script>
+</html>
